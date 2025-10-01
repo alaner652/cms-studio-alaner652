@@ -43,9 +43,9 @@ export const projectType = defineType({
       type: "string",
       options: {
         list: [
-          { title: "🌐 Web Development", value: PROJECT_CATEGORIES.WEB },
-          { title: "🎮 Game Development", value: PROJECT_CATEGORIES.GAME },
-          { title: "🛠️ Tool/Utility", value: PROJECT_CATEGORIES.TOOL },
+          { title: "Web Development", value: PROJECT_CATEGORIES.WEB },
+          { title: "Game Development", value: PROJECT_CATEGORIES.GAME },
+          { title: "Tool/Utility", value: PROJECT_CATEGORIES.TOOL },
         ],
         layout: "radio",
       },
@@ -102,10 +102,10 @@ export const projectType = defineType({
               type: "string",
               options: {
                 list: [
-                  { title: "🌐 Live Preview", value: "Live Preview" },
-                  { title: "💻 View Source", value: "View Source" },
-                  { title: "📺 View Video", value: "View Video" },
-                  { title: "📄 Documentation", value: "Documentation" },
+                  { title: "Live Preview", value: "Live Preview" },
+                  { title: "View Source", value: "View Source" },
+                  { title: "View Video", value: "View Video" },
+                  { title: "Documentation", value: "Documentation" },
                 ],
               },
             },
@@ -130,13 +130,6 @@ export const projectType = defineType({
       group: "media",
     },
     {
-      name: "featured",
-      title: "⭐ Featured",
-      type: "boolean",
-      initialValue: false,
-      group: "settings",
-    },
-    {
       name: "order",
       title: "Display Order",
       type: "number",
@@ -151,12 +144,10 @@ export const projectType = defineType({
       category: "category",
       year: "year",
       media: "image",
-      featured: "featured",
     },
-    prepare({ title, category, year, media, featured }) {
-      const icon = featured ? "⭐" : "";
+    prepare({ title, category, year, media }) {
       return {
-        title: `${icon} ${title}`.trim(),
+        title: title,
         subtitle: `${category} • ${year}`,
         media,
       };

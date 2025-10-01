@@ -24,7 +24,7 @@ export default defineConfig({
         {id: 'en', title: 'English'},
         {id: 'zh_TW', title: '繁體中文'},
       ],
-      schemaTypes: ['project', 'testimonial', 'faq'],
+      schemaTypes: ['project', 'testimonial', 'faq', 'skill'],
       languageField: 'language',
     }),
     visionTool({defaultApiVersion: '2025-09-30'}),
