@@ -1,4 +1,5 @@
 import { defineType } from 'sanity'
+import { LOCALE_OPTIONS, LANGUAGE_NAMES } from './translationTypes'
 
 export const goalType = defineType({
   name: 'goal',
@@ -6,17 +7,53 @@ export const goalType = defineType({
   type: 'document',
   fields: [
     {
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-    },
-    {
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-      rows: 3,
-      validation: (Rule) => Rule.required(),
+      name: 'translations',
+      title: 'Translations',
+      type: 'array',
+      validation: (Rule) => Rule.required().min(1),
+      of: [
+        {
+          type: 'object',
+          name: 'translation',
+          fields: [
+            {
+              name: 'locale',
+              title: 'Language',
+              type: 'string',
+              options: {
+                list: LOCALE_OPTIONS,
+                layout: 'radio',
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 3,
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              locale: 'locale',
+              title: 'title',
+            },
+            prepare({ locale, title }) {
+              return {
+                title: LANGUAGE_NAMES[locale] || locale,
+                subtitle: title || 'No title',
+              }
+            },
+          },
+        },
+      ],
     },
     {
       name: 'icon',
@@ -48,16 +85,16 @@ export const goalType = defineType({
   ],
   preview: {
     select: {
-      title: 'title',
-      description: 'description',
+      translations: 'translations',
       icon: 'icon',
       order: 'order',
     },
-    prepare({ title, description, icon, order }) {
+    prepare({ translations, icon, order }) {
+      const defaultTranslation = translations?.find((t: any) => t.locale === 'zh') || translations?.[0]
       return {
-        title: title,
+        title: defaultTranslation?.title || 'Untitled Goal',
         subtitle: `${icon} • Order: ${order}`,
-        description: description?.substring(0, 100),
+        description: defaultTranslation?.description?.substring(0, 100),
       }
     },
   },

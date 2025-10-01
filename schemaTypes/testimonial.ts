@@ -1,4 +1,5 @@
 import { defineType } from "sanity";
+import { LOCALE_OPTIONS, LANGUAGE_NAMES } from "./translationTypes";
 
 export const testimonialType = defineType({
   name: "testimonial",
@@ -10,12 +11,6 @@ export const testimonialType = defineType({
   ],
   fields: [
     {
-      name: "language",
-      type: "string",
-      readOnly: true,
-      hidden: true,
-    },
-    {
       name: "name",
       title: "Client Name",
       type: "string",
@@ -23,18 +18,53 @@ export const testimonialType = defineType({
       group: "content",
     },
     {
-      name: "role",
-      title: "Role / Job Title",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-      group: "content",
-    },
-    {
-      name: "quote",
-      title: "Testimonial",
-      type: "text",
-      rows: 5,
-      validation: (Rule) => Rule.required().min(10),
+      name: "translations",
+      title: "Translations",
+      type: "array",
+      validation: (Rule) => Rule.required().min(1),
+      of: [
+        {
+          type: "object",
+          name: "translation",
+          fields: [
+            {
+              name: "locale",
+              title: "Language",
+              type: "string",
+              options: {
+                list: LOCALE_OPTIONS,
+                layout: "radio",
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "role",
+              title: "Role / Job Title",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "quote",
+              title: "Testimonial",
+              type: "text",
+              rows: 5,
+              validation: (Rule) => Rule.required().min(10),
+            },
+          ],
+          preview: {
+            select: {
+              locale: "locale",
+              role: "role",
+            },
+            prepare({ locale, role }) {
+              return {
+                title: LANGUAGE_NAMES[locale] || locale,
+                subtitle: role || "No role",
+              };
+            },
+          },
+        },
+      ],
       group: "content",
     },
     {
@@ -73,19 +103,19 @@ export const testimonialType = defineType({
   preview: {
     select: {
       name: "name",
-      role: "role",
-      quote: "quote",
+      translations: "translations",
       media: "avatar",
       rating: "rating",
       featured: "featured",
     },
-    prepare({ name, role, quote, media, rating, featured }) {
+    prepare({ name, translations, media, rating, featured }) {
+      const defaultTranslation = translations?.find((t: any) => t.locale === "zh") || translations?.[0];
       const stars = "⭐".repeat(Math.floor(rating / 2));
       const icon = featured ? "✓ " : "";
       return {
         title: `${icon}${name}`,
-        subtitle: `${role} • ${stars} ${rating}/10`,
-        description: quote?.substring(0, 100) + "...",
+        subtitle: `${defaultTranslation?.role || "No role"} • ${stars} ${rating}/10`,
+        description: defaultTranslation?.quote?.substring(0, 100) + "...",
         media,
       };
     },

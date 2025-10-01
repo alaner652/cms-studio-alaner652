@@ -1,4 +1,5 @@
 import { defineType } from 'sanity'
+import { LOCALE_OPTIONS, LANGUAGE_NAMES } from './translationTypes'
 
 export const educationType = defineType({
   name: 'education',
@@ -6,19 +7,55 @@ export const educationType = defineType({
   type: 'document',
   fields: [
     {
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-      description: 'e.g., "Computer Science", "Web Development"',
-    },
-    {
-      name: 'items',
-      title: 'Courses/Items',
+      name: 'translations',
+      title: 'Translations',
       type: 'array',
-      of: [{ type: 'string' }],
       validation: (Rule) => Rule.required().min(1),
-      description: 'List of courses or learning items',
+      of: [
+        {
+          type: 'object',
+          name: 'translation',
+          fields: [
+            {
+              name: 'locale',
+              title: 'Language',
+              type: 'string',
+              options: {
+                list: LOCALE_OPTIONS,
+                layout: 'radio',
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+              description: 'e.g., "Computer Science", "Web Development"',
+            },
+            {
+              name: 'items',
+              title: 'Courses/Items',
+              type: 'array',
+              of: [{ type: 'string' }],
+              validation: (Rule) => Rule.required().min(1),
+              description: 'List of courses or learning items',
+            },
+          ],
+          preview: {
+            select: {
+              locale: 'locale',
+              title: 'title',
+            },
+            prepare({ locale, title }) {
+              return {
+                title: LANGUAGE_NAMES[locale] || locale,
+                subtitle: title || 'No title',
+              }
+            },
+          },
+        },
+      ],
     },
     {
       name: 'order',
@@ -30,14 +67,14 @@ export const educationType = defineType({
   ],
   preview: {
     select: {
-      title: 'title',
-      items: 'items',
+      translations: 'translations',
       order: 'order',
     },
-    prepare({ title, items, order }) {
-      const itemCount = items?.length || 0
+    prepare({ translations, order }) {
+      const defaultTranslation = translations?.find((t: any) => t.locale === 'zh') || translations?.[0]
+      const itemCount = defaultTranslation?.items?.length || 0
       return {
-        title: title,
+        title: defaultTranslation?.title || 'Untitled Education',
         subtitle: `${itemCount} item${itemCount !== 1 ? 's' : ''} • Order: ${order}`,
       }
     },

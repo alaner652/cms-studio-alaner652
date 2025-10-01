@@ -1,4 +1,5 @@
 import { defineType } from "sanity";
+import { LOCALE_OPTIONS, LANGUAGE_NAMES } from "./translationTypes";
 
 const PROJECT_CATEGORIES = {
   WEB: "WEB",
@@ -17,24 +18,53 @@ export const projectType = defineType({
   ],
   fields: [
     {
-      name: "language",
-      type: "string",
-      readOnly: true,
-      hidden: true,
-    },
-    {
-      name: "title",
-      title: "Title",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-      group: "content",
-    },
-    {
-      name: "description",
-      title: "Description",
-      type: "text",
-      rows: 4,
-      validation: (Rule) => Rule.required(),
+      name: "translations",
+      title: "Translations",
+      type: "array",
+      validation: (Rule) => Rule.required().min(1),
+      of: [
+        {
+          type: "object",
+          name: "translation",
+          fields: [
+            {
+              name: "locale",
+              title: "Language",
+              type: "string",
+              options: {
+                list: LOCALE_OPTIONS,
+                layout: "radio",
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "title",
+              title: "Title",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "description",
+              title: "Description",
+              type: "text",
+              rows: 4,
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              locale: "locale",
+              title: "title",
+            },
+            prepare({ locale, title }) {
+              return {
+                title: LANGUAGE_NAMES[locale] || locale,
+                subtitle: title || "No title",
+              };
+            },
+          },
+        },
+      ],
       group: "content",
     },
     {
@@ -140,14 +170,15 @@ export const projectType = defineType({
   ],
   preview: {
     select: {
-      title: "title",
+      translations: "translations",
       category: "category",
       year: "year",
       media: "image",
     },
-    prepare({ title, category, year, media }) {
+    prepare({ translations, category, year, media }) {
+      const defaultTranslation = translations?.find((t: any) => t.locale === "zh") || translations?.[0];
       return {
-        title: title,
+        title: defaultTranslation?.title || "Untitled Project",
         subtitle: `${category} • ${year}`,
         media,
       };

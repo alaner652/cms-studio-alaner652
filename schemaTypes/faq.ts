@@ -1,4 +1,5 @@
 import { defineType } from "sanity";
+import { LOCALE_OPTIONS, LANGUAGE_NAMES } from "./translationTypes";
 
 export const faqType = defineType({
   name: "faq",
@@ -10,24 +11,53 @@ export const faqType = defineType({
   ],
   fields: [
     {
-      name: "language",
-      type: "string",
-      readOnly: true,
-      hidden: true,
-    },
-    {
-      name: "question",
-      title: "Question",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-      group: "content",
-    },
-    {
-      name: "answer",
-      title: "Answer",
-      type: "text",
-      rows: 4,
-      validation: (Rule) => Rule.required().min(10),
+      name: "translations",
+      title: "Translations",
+      type: "array",
+      validation: (Rule) => Rule.required().min(1),
+      of: [
+        {
+          type: "object",
+          name: "translation",
+          fields: [
+            {
+              name: "locale",
+              title: "Language",
+              type: "string",
+              options: {
+                list: LOCALE_OPTIONS,
+                layout: "radio",
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "question",
+              title: "Question",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "answer",
+              title: "Answer",
+              type: "text",
+              rows: 4,
+              validation: (Rule) => Rule.required().min(10),
+            },
+          ],
+          preview: {
+            select: {
+              locale: "locale",
+              question: "question",
+            },
+            prepare({ locale, question }) {
+              return {
+                title: LANGUAGE_NAMES[locale] || locale,
+                subtitle: question || "No question",
+              };
+            },
+          },
+        },
+      ],
       group: "content",
     },
     {
@@ -48,15 +78,15 @@ export const faqType = defineType({
   ],
   preview: {
     select: {
-      question: "question",
-      answer: "answer",
+      translations: "translations",
       featured: "featured",
     },
-    prepare({ question, answer, featured }) {
+    prepare({ translations, featured }) {
+      const defaultTranslation = translations?.find((t: any) => t.locale === "zh") || translations?.[0];
       const icon = featured ? "✓ " : "";
       return {
-        title: `${icon}${question}`,
-        subtitle: answer?.substring(0, 100) + "...",
+        title: `${icon}${defaultTranslation?.question || "Untitled FAQ"}`,
+        subtitle: defaultTranslation?.answer?.substring(0, 100) + "...",
       };
     },
   },

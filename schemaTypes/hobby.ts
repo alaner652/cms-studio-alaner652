@@ -1,4 +1,5 @@
 import { defineType } from 'sanity'
+import { LOCALE_OPTIONS, LANGUAGE_NAMES } from './translationTypes'
 
 export const hobbyType = defineType({
   name: 'hobby',
@@ -6,10 +7,46 @@ export const hobbyType = defineType({
   type: 'document',
   fields: [
     {
-      name: 'label',
-      title: 'Hobby Name',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
+      name: 'translations',
+      title: 'Translations',
+      type: 'array',
+      validation: (Rule) => Rule.required().min(1),
+      of: [
+        {
+          type: 'object',
+          name: 'translation',
+          fields: [
+            {
+              name: 'locale',
+              title: 'Language',
+              type: 'string',
+              options: {
+                list: LOCALE_OPTIONS,
+                layout: 'radio',
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'label',
+              title: 'Hobby Name',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              locale: 'locale',
+              label: 'label',
+            },
+            prepare({ locale, label }) {
+              return {
+                title: LANGUAGE_NAMES[locale] || locale,
+                subtitle: label || 'No label',
+              }
+            },
+          },
+        },
+      ],
     },
     {
       name: 'icon',
@@ -77,15 +114,16 @@ export const hobbyType = defineType({
   ],
   preview: {
     select: {
-      label: 'label',
+      translations: 'translations',
       icon: 'icon',
       size: 'size',
       x: 'position.x',
       y: 'position.y',
     },
-    prepare({ label, icon, size, x, y }) {
+    prepare({ translations, icon, size, x, y }) {
+      const defaultTranslation = translations?.find((t: any) => t.locale === 'zh') || translations?.[0]
       return {
-        title: `${label} (${size})`,
+        title: `${defaultTranslation?.label || 'Untitled Hobby'} (${size})`,
         subtitle: `${icon} • Position: (${x}%, ${y}%)`,
       }
     },
