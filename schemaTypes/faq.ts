@@ -61,13 +61,6 @@ export const faqType = defineType({
       group: "content",
     },
     {
-      name: "featured",
-      title: "⭐ Show on Homepage",
-      type: "boolean",
-      initialValue: true,
-      group: "settings",
-    },
-    {
       name: "order",
       title: "Display Order",
       type: "number",
@@ -79,14 +72,13 @@ export const faqType = defineType({
   preview: {
     select: {
       translations: "translations",
-      featured: "featured",
+      order: "order",
     },
-    prepare({ translations, featured }) {
+    prepare({ translations, order }) {
       const defaultTranslation = translations?.find((t: any) => t.locale === "zh") || translations?.[0];
-      const icon = featured ? "✓ " : "";
       return {
-        title: `${icon}${defaultTranslation?.question || "Untitled FAQ"}`,
-        subtitle: defaultTranslation?.answer?.substring(0, 100) + "...",
+        title: defaultTranslation?.question || "Untitled FAQ",
+        subtitle: `Order: ${order} • ${defaultTranslation?.answer?.substring(0, 80) || ""}...`,
       };
     },
   },
