@@ -1,0 +1,9 @@
+import {defineCliConfig} from 'sanity/cli'
+
+export default defineCliConfig({
+  api: {
+    projectId: 'f3n56vs0',
+    dataset: 'production'
+  },
+  studioHost: 'alaner652'
+})

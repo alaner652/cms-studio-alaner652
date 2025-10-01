@@ -1,0 +1,24 @@
+{
+  "name": "smallr-studio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sanity Studio for SmallR Portfolio",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "@sanity/document-internationalization": "^4.0.0",
+    "@sanity/locale-zh-hant": "^2.2.25",
+    "@sanity/vision": "^4.10.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "sanity": "^4.10.1",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^18"
+  }
+}
