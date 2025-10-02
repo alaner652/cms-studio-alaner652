@@ -9,6 +9,7 @@ import { hobbyType } from './hobby'
 import { journeyType } from './journey'
 import { goalType } from './goal'
 import { socialLinkType } from './socialLink'
+import { blogType } from './blog'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -22,5 +23,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     journeyType,
     goalType,
     socialLinkType,
+    blogType,
   ],
 }
