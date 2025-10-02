@@ -5,42 +5,9 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
     .items([
-      // Projects section
-      S.listItem()
-        .title("Projects")
-        .child(
-          S.documentTypeList("project")
-            .title("Projects")
-            .defaultOrdering([{ field: "order", direction: "asc" }])
-        ),
-
-      S.divider(),
-
-      // Testimonials section
-      S.listItem()
-        .title("Testimonials")
-        .child(
-          S.documentTypeList("testimonial")
-            .title("Testimonials")
-            .defaultOrdering([{ field: "order", direction: "asc" }])
-        ),
-
-      S.divider(),
-
-      // FAQ section
-      S.listItem()
-        .title("FAQ")
-        .child(
-          S.documentTypeList("faq")
-            .title("FAQ")
-            .defaultOrdering([{ field: "order", direction: "asc" }])
-        ),
-
-      S.divider(),
-
       // About section
       S.listItem()
-        .title("About Section")
+        .title("About")
         .child(
           S.list()
             .title("About Content")
@@ -81,6 +48,50 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // Projects section
+      S.listItem()
+        .title("Projects")
+        .child(
+          S.documentTypeList("project")
+            .title("Projects")
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+        ),
+
+      S.divider(),
+
+      // Testimonials section
+      S.listItem()
+        .title("Testimonials")
+        .child(
+          S.documentTypeList("testimonial")
+            .title("Testimonials")
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+        ),
+
+      S.divider(),
+
+      // FAQ section
+      S.listItem()
+        .title("FAQ")
+        .child(
+          S.documentTypeList("faq")
+            .title("FAQ")
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+        ),
+
+      S.divider(),
+
+      // Social Links section
+      S.listItem()
+        .title("Social Links")
+        .child(
+          S.documentTypeList("socialLink")
+            .title("Social Links")
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+        ),
+
+      S.divider(),
+
       // Add other document types here
       ...S.documentTypeListItems().filter(
         (listItem) =>
@@ -88,6 +99,7 @@ export const structure: StructureResolver = (S) =>
             "project",
             "testimonial",
             "faq",
+            "socialLink",
             "skill",
             "education",
             "hobby",
@@ -95,4 +107,4 @@ export const structure: StructureResolver = (S) =>
             "goal",
           ].includes(listItem.getId() || "")
       ),
-    ])
+    ]);
