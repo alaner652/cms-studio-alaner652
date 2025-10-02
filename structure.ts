@@ -5,6 +5,16 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
     .items([
+      // Hero section
+      S.listItem()
+        .title("Hero")
+        .child(
+          S.documentTypeList("hero")
+            .title("Hero")
+        ),
+
+      S.divider(),
+
       // About section
       S.listItem()
         .title("About")
@@ -96,6 +106,7 @@ export const structure: StructureResolver = (S) =>
       ...S.documentTypeListItems().filter(
         (listItem) =>
           ![
+            "hero",
             "project",
             "testimonial",
             "faq",

@@ -1,4 +1,5 @@
 import { type SchemaTypeDefinition } from 'sanity'
+import { heroType } from './hero'
 import { projectType } from './project'
 import { testimonialType } from './testimonial'
 import { faqType } from './faq'
@@ -11,6 +12,7 @@ import { socialLinkType } from './socialLink'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    heroType,
     projectType,
     testimonialType,
     faqType,
